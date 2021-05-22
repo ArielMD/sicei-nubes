@@ -3,21 +3,28 @@ package mx.uady.sicei.service;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import mx.uady.sicei.exception.NotFoundException;
 import mx.uady.sicei.model.Alumno;
+import mx.uady.sicei.model.Equipo;
+import mx.uady.sicei.model.Usuario;
 import mx.uady.sicei.model.request.AlumnoRequest;
 import mx.uady.sicei.repository.AlumnoRepository;
+import mx.uady.sicei.repository.UsuarioRepository;
 
 @Service
 public class AlumnoService {
 
     @Autowired
     private AlumnoRepository alumnoRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public List<Alumno> getAlumnos() {
 
@@ -42,14 +49,38 @@ public class AlumnoService {
         return alumnoRepository.findByNombreContaining(nombre);
     }
 
+    @Transactional
     public Alumno crearAlumno(AlumnoRequest request) {
+
         Alumno alumno = new Alumno();
 
         alumno.setNombre(request.getNombre());
         alumno.setLicenciatura(request.getLicenciatura());
+
+        // if(!validarEquipo(request.getEquipo()).present){
+        // throw new NotFoundException()
+        // }
+
+        // alumno.setEquipo(request.getEquipo());
+
+        Usuario usuario = new Usuario();
+
+        usuario.setUsuario(request.getCorreo());
+        usuario.setPassword("123");
+
+        String token = UUID.randomUUID().toString();
+        usuario.setToken(token);
+        alumno.setUsuario(usuario);
+
+        usuario = usuarioRepository.save(usuario);
         alumno = alumnoRepository.save(alumno); // INSERT
 
         return alumno;
     }
+
+    // public Optional validarEquipo(Integer equipoID) {
+    // Optional<Equipo> op = equipoRepository.findById(equipoID);
+    // return op;
+    // }
 
 }
