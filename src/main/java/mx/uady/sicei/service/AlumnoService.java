@@ -83,4 +83,25 @@ public class AlumnoService {
     // return op;
     // }
 
+    @Transactional
+    public Alumno actualizarAlumno(Integer id, AlumnoRequest request) {
+        Optional<Alumno> alumno = alumnoRepository.findById(id);
+
+        if (!alumno.isPresent()) {
+            throw new NotFoundException();
+        }
+
+        // Validar equipo
+
+        Alumno alumnoEncontrado = alumno.get();
+
+        alumnoEncontrado.setLicenciatura(request.getLicenciatura());
+        alumnoEncontrado.setNombre(request.getNombre());
+        // alumnoEncontrado.setEquipo();
+
+        alumnoRepository.save(alumnoEncontrado);
+
+        return alumnoEncontrado;
+    }
+
 }
