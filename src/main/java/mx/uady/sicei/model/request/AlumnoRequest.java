@@ -11,6 +11,7 @@ public class AlumnoRequest {
     @Size(min = 1, max = 255)
     private String nombre;
 
+    @NotEmpty
     private Licenciatura licenciatura;
 
     public AlumnoRequest() {
@@ -28,6 +29,14 @@ public class AlumnoRequest {
         this.nombre = nombre;
     }
 
+    public Licenciatura getLicenciatura() {
+        return this.licenciatura;
+    }
+
+    public void setLicenciatura(Licenciatura licenciatura) {
+        this.licenciatura = licenciatura;
+    }
+
     public AlumnoRequest nombre(String nombre) {
         this.nombre = nombre;
         return this;
@@ -35,9 +44,7 @@ public class AlumnoRequest {
 
     @Override
     public String toString() {
-        return "{" +
-            " nombre='" + getNombre() + "'" +
-            "}";
+        return "{" + " nombre='" + getNombre() + "'" + "}";
     }
-    
+
 }
