@@ -40,12 +40,10 @@ public class ProfesorService {
         return profesor;
     }
 
-    //@Override
     public Profesor getProfesor(String nombre) {
         return profesorRepository.findByNombre(nombre).get(0);//findByIdSerializable(id).get();
     }
 
-    //@Override
     public Profesor actualizarProfesor(String nombre, ProfesorRequest profesor){
         Profesor profesorAct = getProfesor(nombre);
 
@@ -53,32 +51,26 @@ public class ProfesorService {
         profesorReference = setProfesorNewValues(profesorReference, profesor);
         return profesorRepository.save(profesorReference);
     }
-    /*
-
-    @Override
-    public Video editVideo(String id,VideoEditRequest videoEditRequest) {
-        Video videoToEdit = getVideo(id);
-        videoClasificationService.deleteMultipleVideoClasification(videoToEdit.getId());
-        UserUtil.checkUserAuthorization(UserUtil.getActualSession(), videoToEdit);
-        //get object refererence and not database entity
-        Video videoReference = videoRepository.getOne(videoToEdit.getId());
-        videoReference = setVideoReferenceValues(videoReference,videoEditRequest);
-        return videoRepository.save(videoReference);
-    }*/
 
     private Profesor setProfesorNewValues(Profesor profesorRef,ProfesorRequest profesorEdit){
         profesorRef.setNombre(profesorEdit.getNombre());
         profesorRef.setHoras(profesorEdit.getHoras());
         return profesorRef;
     }
+
+    public Profesor eliminarProfesor(String nombre){
+        Profesor profeEliminar = profesorRepository.findByNombre(nombre).get(0);
+        profesorRepository.deleteById(profeEliminar.getId());;
+        return profeEliminar;
+    }
+
+
     /*
-    private Video setVideoReferenceValues(Video videoReference,VideoEditRequest videoEditRequest){
-        if(videoEditRequest.getDescription() != null) videoReference.setDescription(videoEditRequest.getDescription());
-        if(videoEditRequest.getTitulo() != null) videoReference.setTitulo(videoEditRequest.getTitulo());
-        if(videoEditRequest.getClasificaciones() != null) videoReference.
-                setVideosClasification(videoClasificationService.
-                        storeMultipleVideoClasification(videoReference,videoEditRequest.getClasificaciones()));
-        return videoReference;
-    }*/
+     * public Video deleteVideo(String id) { Video videoToEliminate =
+     * videoRepository.findByIdSerializable(id).get();
+     * UserUtil.checkUserAuthorization(UserUtil.getActualSession(),
+     * videoToEliminate); videoRepository.deleteVideoByIdSerializable(id); return
+     * videoToEliminate; }
+     */
 
 }

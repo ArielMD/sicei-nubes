@@ -13,5 +13,7 @@ public interface ProfesorRepository extends CrudRepository<Profesor, Integer>{
     List<Profesor> findByNombre(String nombre);
 
     List<Profesor> findByNombreContaining(String nombre);
+
+    void deleteById(Integer id);
     
 }

@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,8 +56,11 @@ public class ProfesorRest {
     @PutMapping("/profesores/{nombre}") // PUT api/profesores/Naomi
     public ResponseEntity<Profesor> editarPorfesor(@PathVariable("nombre") String nombre, @RequestBody ProfesorRequest profesor) {
         return ResponseEntity.ok().body(profesorService.actualizarProfesor(nombre,profesor));
-        /*Profesor alumnoActualizado = alumnoService.updateAlumno(matricula, alumno);
-        return ResponseEntity.ok().body(alumnoActualizado);*/
+    }
+
+    @DeleteMapping("/profesores/{nombre}")
+    public ResponseEntity<Profesor> eliminarProfesor(@PathVariable("nombre") String nombre) {
+        return ResponseEntity.ok().body(profesorService.eliminarProfesor(nombre));
     }
     
 }
