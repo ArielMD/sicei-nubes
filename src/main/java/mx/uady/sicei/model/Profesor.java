@@ -27,7 +27,7 @@ public class Profesor {
     @Column(name = "nombre")
     private String nombre;
 
-    @Column
+    @Column(name = "horas")
     private Integer horas;
 
     public Profesor(){}

@@ -14,8 +14,9 @@ public class ProfesorRequest {
     public ProfesorRequest() {
     }
 
-    public ProfesorRequest(String nombre) {
+    public ProfesorRequest(String nombre, Integer horas) {
         this.nombre = nombre;
+        this.horas = horas;
     }
 
     public String getNombre() {
@@ -28,6 +29,19 @@ public class ProfesorRequest {
 
     public ProfesorRequest nombre(String nombre) {
         this.nombre = nombre;
+        return this;
+    }
+
+    public Integer getHoras() {
+        return this.horas;
+    }
+
+    public void setHoras(Integer horas) {
+        this.horas = horas;
+    }
+
+    public ProfesorRequest horas(Integer horas){
+        this.horas = horas;
         return this;
     }
 

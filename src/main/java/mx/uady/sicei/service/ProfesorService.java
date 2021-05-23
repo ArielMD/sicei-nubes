@@ -34,6 +34,7 @@ public class ProfesorService {
         Profesor profesor = new Profesor();
 
         profesor.setNombre(request.getNombre());
+        profesor.setHoras(request.getHoras());
         profesor = profesorRepository.save(profesor);
 
         return profesor;

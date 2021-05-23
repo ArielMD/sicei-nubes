@@ -52,10 +52,3 @@ public class ProfesorRest {
     }
     
 }
-/*
- * 
- * { alumnos.add(new Alumno("12345", "Ana Canto")); alumnos.add(new
- * Alumno("67890", "Emily Sánchez")); alumnos.add(new Alumno("13698",
- * "Mariana Romero")); }
- * 
- */
