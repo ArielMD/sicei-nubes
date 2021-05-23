@@ -1,5 +1,7 @@
 package mx.uady.sicei.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -11,13 +13,23 @@ import javax.persistence.Table;
 public class Tutoria {
 
   @EmbeddedId
-  @ManyToOne(targetEntity = TutoriaLlave.class)
   private TutoriaLlave id;
+
+  @ManyToOne
+  private Alumno alumno;
+
+  @ManyToOne
+  private Profesor profesor;
 
   @Column(name = "horas")
   private Integer horas;
 
   public Tutoria() {}
+
+  public Tutoria(TutoriaLlave id, Integer horas) {
+    this.id = id;
+    this.horas = horas;
+  }
 
   public void setId(TutoriaLlave id) {
     this.id = id;
@@ -39,11 +51,13 @@ public class Tutoria {
   public String toString() {
     return (
       "{" +
-      "id_alumno: " +
-      this.id.getIdAlumno() +
-      "id_profesor: " +
-      this.id.getIdProfesor() +
-      "horas: " +
+      "id:" +
+      "{ 'id_alumno':" +
+        this.id.getIdAlumno() +
+      "'id_profesor': " +
+        this.id.getIdProfesor() +
+      "}" +
+      "'horas': " +
       this.horas +
       "}"
     );

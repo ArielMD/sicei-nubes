@@ -32,37 +32,35 @@ public class TutoriaRest {
     return ResponseEntity.ok().body(tutorias);
   }
 
-  @GetMapping("/tutorias/{id}")
-  public ResponseEntity<Tutoria> getTutoria(@PathVariable TutoriaLlave id) {
+  @GetMapping("/tutorias/alumnos/{alumnoId}/profesores/{profesorId}")
+  public ResponseEntity<Tutoria> getTutoria(@PathVariable("alumnoId") Integer idAlumno, @PathVariable("profesorId") Integer idProfesor) {
+    TutoriaLlave id = new TutoriaLlave(idAlumno, idProfesor);
+
     Tutoria tutoria = tutoriaService.getTutoria(id);
 
     return ResponseEntity.ok().body(tutoria);
   }
 
   @PostMapping("/tutorias")
-  public ResponseEntity<Tutoria> postTutoria(
-    @RequestBody @Valid TutoriaRequest request
-  )
-    throws URISyntaxException {
+  public ResponseEntity<Tutoria> postTutoria(@RequestBody @Valid TutoriaRequest request) throws URISyntaxException {
     Tutoria tutoriaCreada = tutoriaService.crearTutoria(request);
 
-    return ResponseEntity
-      .created(new URI("/tutorias/" + tutoriaCreada.getId()))
-      .body(tutoriaCreada);
+    return ResponseEntity.created(new URI("/tutorias/" + tutoriaCreada.getId())).body(tutoriaCreada);
   }
 
-  @PutMapping("/tutorias/{id}")
-  public ResponseEntity<Tutoria> putTutoria(
-    @RequestBody @Valid TutoriaRequest request,
-    @PathVariable TutoriaLlave id
-  ) {
+  @PutMapping("/tutorias/alumnos/{alumnoId}/profesores/{profesorId}")
+  public ResponseEntity<Tutoria> putTutoria(@PathVariable("alumnoId") Integer idAlumno, @PathVariable("profesorId") Integer idProfesor, @RequestBody @Valid TutoriaRequest request) {
+    TutoriaLlave id = new TutoriaLlave(idAlumno, idProfesor);
+
     Tutoria tutoriaActualizada = tutoriaService.actualizarTutoria(id, request);
 
     return ResponseEntity.ok().body(tutoriaActualizada);
   }
 
-  @DeleteMapping("/tutorias/{id}")
-  public ResponseEntity<Void> deleteTutoria(@PathVariable TutoriaLlave id) {
+  @DeleteMapping("/tutorias/alumnos/{alumnoId}/profesores/{profesorId}")
+  public ResponseEntity<Void> deleteTutoria(@PathVariable("alumnoId") Integer idAlumno, @PathVariable("profesorId") Integer idProfesor) {
+    TutoriaLlave id = new TutoriaLlave(idAlumno, idProfesor);
+
     tutoriaService.eliminarTutoria(id);
 
     return ResponseEntity.ok().build();
