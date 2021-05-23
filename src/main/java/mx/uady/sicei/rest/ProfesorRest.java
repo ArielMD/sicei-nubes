@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import mx.uady.sicei.model.Profesor;
 import mx.uady.sicei.model.request.ProfesorRequest;
@@ -37,8 +39,7 @@ public class ProfesorRest {
         return ResponseEntity.ok().body(profesorService.buscarProfesores(nombre));
     }
 
-    // POST /api/alumnos
-    @PostMapping("/profesores")
+    @PostMapping("/profesores") // POST api/profesores
     public ResponseEntity<Profesor> postProfesores(@RequestBody @Valid ProfesorRequest request) throws URISyntaxException {
 
         // RequestBody le indica a Java que estamos esperando un request que cumpla con
@@ -49,6 +50,13 @@ public class ProfesorRest {
         // 201 Created
         // Header: Location
         return ResponseEntity.created(new URI("/profesores/" + profesor.getId())).body(profesor);
+    }
+
+    @PutMapping("/profesores/{nombre}") // PUT api/profesores/Naomi
+    public ResponseEntity<Profesor> editarPorfesor(@PathVariable("nombre") String nombre, @RequestBody ProfesorRequest profesor) {
+        return ResponseEntity.ok().body(profesorService.actualizarProfesor(nombre,profesor));
+        /*Profesor alumnoActualizado = alumnoService.updateAlumno(matricula, alumno);
+        return ResponseEntity.ok().body(alumnoActualizado);*/
     }
     
 }
