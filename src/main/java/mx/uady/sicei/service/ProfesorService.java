@@ -3,8 +3,8 @@ package mx.uady.sicei.service;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import mx.uady.sicei.model.Profesor;
@@ -17,6 +17,7 @@ public class ProfesorService {
     @Autowired
     private ProfesorRepository profesorRepository;
 
+    @Transactional
     public List<Profesor> getProfesores() {
 
         List<Profesor> profesores = new LinkedList<>();
@@ -30,6 +31,7 @@ public class ProfesorService {
         return profesorRepository.findByNombreContaining(nombre);
     }
 
+    @Transactional
     public Profesor crearProfesor(ProfesorRequest request) {
         Profesor profesor = new Profesor();
 
@@ -40,16 +42,16 @@ public class ProfesorService {
         return profesor;
     }
 
-    public Profesor getProfesor(String nombre) {
-        return profesorRepository.findByNombre(nombre).get(0);//findByIdSerializable(id).get();
-    }
-
     public Profesor actualizarProfesor(String nombre, ProfesorRequest profesor){
-        Profesor profesorAct = getProfesor(nombre);
+        Profesor profeAactualizar = getOneProfesor(nombre);
 
-        Profesor profesorReference = profesorRepository.findByNombre(profesorAct.getNombre()).get(0);
+        Profesor profesorReference = getOneProfesor(profeAactualizar.getNombre());
         profesorReference = setProfesorNewValues(profesorReference, profesor);
         return profesorRepository.save(profesorReference);
+    }
+
+    private Profesor getOneProfesor(String nombre) {
+        return profesorRepository.findByNombre(nombre).get(0);
     }
 
     private Profesor setProfesorNewValues(Profesor profesorRef,ProfesorRequest profesorEdit){
@@ -63,14 +65,4 @@ public class ProfesorService {
         profesorRepository.deleteById(profeEliminar.getId());;
         return profeEliminar;
     }
-
-
-    /*
-     * public Video deleteVideo(String id) { Video videoToEliminate =
-     * videoRepository.findByIdSerializable(id).get();
-     * UserUtil.checkUserAuthorization(UserUtil.getActualSession(),
-     * videoToEliminate); videoRepository.deleteVideoByIdSerializable(id); return
-     * videoToEliminate; }
-     */
-
 }

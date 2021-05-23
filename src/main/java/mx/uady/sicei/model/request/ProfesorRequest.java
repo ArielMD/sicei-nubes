@@ -1,6 +1,7 @@
 package mx.uady.sicei.model.request;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class ProfesorRequest {
@@ -9,6 +10,7 @@ public class ProfesorRequest {
     @Size(min = 1, max = 255)
     private String nombre;
 
+    @NotNull(message = "El profesor debe tener horas de trabajo asignadas.")
     private Integer horas;
 
     public ProfesorRequest() {
@@ -41,7 +43,11 @@ public class ProfesorRequest {
     }
 
     public ProfesorRequest horas(Integer horas){
-        this.horas = horas;
+        if(horas.equals(null)){
+            this.horas = 0;
+        }else{
+            this.horas = horas;
+        }
         return this;
     }
 

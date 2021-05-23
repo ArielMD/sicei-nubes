@@ -22,43 +22,36 @@ import mx.uady.sicei.model.Profesor;
 import mx.uady.sicei.model.request.ProfesorRequest;
 import mx.uady.sicei.service.ProfesorService;
 
-@RestController // Metaprogramacion
+@RestController
 @RequestMapping("/api")
 public class ProfesorRest {
 
     @Autowired
     private ProfesorService profesorService;
 
-    // GET /api/alumnos
+    // GET /api/profesores
     @GetMapping("/profesores")
     public ResponseEntity<List<Profesor>> getProfesores() {
         return ResponseEntity.ok().body(profesorService.getProfesores());
     }
 
-    @GetMapping("/profesores/buscar") // RequestParam = Query parameter -> ?llave=valor&llave=valor
+    @GetMapping("/profesores/buscar") 
     public ResponseEntity<List<Profesor>> searchProfesores(@RequestParam("nombre") String nombre) {
         return ResponseEntity.ok().body(profesorService.buscarProfesores(nombre));
     }
 
     @PostMapping("/profesores") // POST api/profesores
     public ResponseEntity<Profesor> postProfesores(@RequestBody @Valid ProfesorRequest request) throws URISyntaxException {
-
-        // RequestBody le indica a Java que estamos esperando un request que cumpla con
-        // los campos del Objeto AlumnoRequest
-
         Profesor profesor = profesorService.crearProfesor(request);
-
-        // 201 Created
-        // Header: Location
         return ResponseEntity.created(new URI("/profesores/" + profesor.getId())).body(profesor);
     }
 
-    @PutMapping("/profesores/{nombre}") // PUT api/profesores/Naomi
+    @PutMapping("/profesores/{nombre}") // PUT api/profesores/:nombre
     public ResponseEntity<Profesor> editarPorfesor(@PathVariable("nombre") String nombre, @RequestBody ProfesorRequest profesor) {
         return ResponseEntity.ok().body(profesorService.actualizarProfesor(nombre,profesor));
     }
 
-    @DeleteMapping("/profesores/{nombre}")
+    @DeleteMapping("/profesores/{nombre}") // DELETE api/profesores/:nombre
     public ResponseEntity<Profesor> eliminarProfesor(@PathVariable("nombre") String nombre) {
         return ResponseEntity.ok().body(profesorService.eliminarProfesor(nombre));
     }
