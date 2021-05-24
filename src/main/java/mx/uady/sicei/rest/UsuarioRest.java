@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import mx.uady.sicei.model.Usuario;
 import mx.uady.sicei.model.request.UsuarioRequest;
@@ -39,6 +41,18 @@ public class UsuarioRest {
     public ResponseEntity<Usuario> getUsuario(@PathVariable Integer id) {
         Usuario u = usuarioService.getUsuario(id);
         return ResponseEntity.status(HttpStatus.OK).body(u);
+    }
+
+    @PutMapping("/usuarios/{id}")
+    public ResponseEntity<Usuario> actualizarUsuario(@RequestBody @Valid UsuarioRequest request,
+            @PathVariable Integer id) {
+        return ResponseEntity.ok().body(usuarioService.actualizarUsuario(id, request));   
+    }
+
+    @DeleteMapping("/usuarios/{id}")
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Integer id) {
+        usuarioService.eliminarUsuario(id);
+        return ResponseEntity.ok().build();
     }
 
 }
