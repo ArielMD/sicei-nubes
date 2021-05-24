@@ -2,6 +2,8 @@ package mx.uady.sicei.rest;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +48,7 @@ public class UsuarioRest {
     @PutMapping("/usuarios/{id}")
     public ResponseEntity<Usuario> actualizarUsuario(@RequestBody @Valid UsuarioRequest request,
             @PathVariable Integer id) {
-        return ResponseEntity.ok().body(usuarioService.actualizarUsuario(id, request));   
+        return ResponseEntity.ok().body(usuarioService.actualizarUsuario(id, request));
     }
 
     @DeleteMapping("/usuarios/{id}")

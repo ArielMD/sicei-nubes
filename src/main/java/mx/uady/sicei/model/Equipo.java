@@ -10,10 +10,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "equipos")
+@JsonIgnoreProperties({ "alumnos" })
 public class Equipo {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -21,10 +24,11 @@ public class Equipo {
     @Column
     private String modelo;
 
-    @OneToMany(mappedBy = "equipo")
+    @OneToMany(mappedBy = "equipo", orphanRemoval = true)
     private List<Alumno> alumnos;
 
-    public Equipo() { }
+    public Equipo() {
+    }
 
     public void setModelo(String modelo) {
         this.modelo = modelo;
@@ -52,9 +56,6 @@ public class Equipo {
 
     @Override
     public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", modelo='" + getModelo() + "'" +
-            "}";
+        return "{" + " id='" + getId() + "'" + ", modelo='" + getModelo() + "'" + "}";
     }
 }
