@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 public class Alumno {
 
     // POJO: Plain Java Object. No existe ninguna accion
-    
+
     // int vs Integer
 
     @Id
@@ -91,7 +91,7 @@ public class Alumno {
     public void setLicenciatura(Licenciatura licenciatura) {
         this.licenciatura = licenciatura;
     }
-    
+
     public Usuario getUsuario() {
         return usuario;
     }
@@ -106,10 +106,7 @@ public class Alumno {
 
     @Override
     public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", nombre='" + getNombre() + "'" +
-            "}";
+        return "{" + " id='" + getId() + "'" + ", nombre='" + getNombre() + "'" + "}";
     }
 
 }
