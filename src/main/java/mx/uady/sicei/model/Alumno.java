@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Alumno {
 
     // POJO: Plain Java Object. No existe ninguna accion
-    
+
     // int vs Integer
 
     @Id
@@ -45,7 +45,6 @@ public class Alumno {
 
     @ManyToOne
     @JoinColumn(name = "id_equipo")
-    @JsonBackReference
     private Equipo equipo;
 
     public Alumno() {
@@ -93,7 +92,7 @@ public class Alumno {
     public void setLicenciatura(Licenciatura licenciatura) {
         this.licenciatura = licenciatura;
     }
-    
+
     public Usuario getUsuario() {
         return usuario;
     }
@@ -108,10 +107,7 @@ public class Alumno {
 
     @Override
     public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", nombre='" + getNombre() + "'" +
-            "}";
+        return "{" + " id='" + getId() + "'" + ", nombre='" + getNombre() + "'" + "}";
     }
 
 }

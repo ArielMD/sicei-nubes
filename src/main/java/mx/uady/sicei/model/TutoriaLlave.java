@@ -1,31 +1,39 @@
 package mx.uady.sicei.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
 
 @Embeddable
-public class TutoriaLlave {
+public class TutoriaLlave implements Serializable {
 
   @Column(name = "id_alumno")
-  private Integer idAlumno;
+  private Integer alumnoId;
 
   @Column(name = "id_profesor")
-  private Integer idProfesor;
+  private Integer profesorId;
 
-  public void setIdAlumno(Integer idAlumno) {
-    this.idAlumno = idAlumno;
+  public TutoriaLlave() {}
+
+  public TutoriaLlave(Integer alumnoId, Integer profesorId) {
+    this.alumnoId = alumnoId;
+    this.profesorId = profesorId;
   }
 
-  public Integer getIdAlumno() {
-    return this.idAlumno;
+  public void setAlumnoId(Integer alumnoId) {
+    this.alumnoId = alumnoId;
   }
 
-  public void setIdProfesor(Integer idProfesor) {
-    this.idProfesor = idProfesor;
+  public Integer getAlumnoId() {
+    return this.alumnoId;
   }
 
-  public Integer getIdProfesor() {
-    return this.idProfesor;
+  public void setProfesorId(Integer profesorId) {
+    this.profesorId = profesorId;
+  }
+
+  public Integer getProfesorId() {
+    return this.profesorId;
   }
 }
