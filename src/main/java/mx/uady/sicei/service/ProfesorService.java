@@ -3,19 +3,27 @@ package mx.uady.sicei.service;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import mx.uady.sicei.exception.NotFoundException;
 import mx.uady.sicei.model.Profesor;
+import mx.uady.sicei.model.Tutoria;
 import mx.uady.sicei.model.request.ProfesorRequest;
 import mx.uady.sicei.repository.ProfesorRepository;
+import mx.uady.sicei.repository.TutoriaRepository;
 
 @Service
 public class ProfesorService {
     
     @Autowired
     private ProfesorRepository profesorRepository;
+
+    @Autowired
+    private TutoriaRepository tutoriaRepository;
 
     public List<Profesor> getProfesores() {
 
@@ -58,19 +66,17 @@ public class ProfesorService {
         return profesorRef;
     }
 
+    @Transactional
     public Profesor eliminarProfesor(String nombre){
         Profesor profeEliminar = profesorRepository.findByNombre(nombre).get(0);
+
+        List<Tutoria> tutorias = tutoriaRepository.findByProfesorId(profeEliminar.getId());
+
+        if(!tutorias.isEmpty()){
+            throw new NotFoundException("El profesor tiene tutorías activas.");
+        }
+
         profesorRepository.deleteById(profeEliminar.getId());;
         return profeEliminar;
     }
-
-
-    /*
-     * public Video deleteVideo(String id) { Video videoToEliminate =
-     * videoRepository.findByIdSerializable(id).get();
-     * UserUtil.checkUserAuthorization(UserUtil.getActualSession(),
-     * videoToEliminate); videoRepository.deleteVideoByIdSerializable(id); return
-     * videoToEliminate; }
-     */
-
 }
