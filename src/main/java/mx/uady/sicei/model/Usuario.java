@@ -90,5 +90,10 @@ public class Usuario {
         return token;
     }
 
+    @Override
+    public String toString() {
+        return "{" + " id='" + getId() + "'" +  ", user='" + getUsuario() + "'" + ", password='" + getPassword() + "}";
+    }
+
     
 }

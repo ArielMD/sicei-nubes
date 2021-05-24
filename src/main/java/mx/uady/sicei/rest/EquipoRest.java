@@ -52,6 +52,16 @@ public class EquipoRest {
         return ResponseEntity.ok().body(equipoService.actualizarEquipo(id, request));   
     }
 
+    @PutMapping("/equipos/{id}/alumnos/{id}/add")
+    public ResponseEntity<Equipo> agregarAlumno(@PathVariable Integer equipoID, Integer usuarioID) {
+        return ResponseEntity.ok().body(equipoService.agregarAlumno(equipoID, usuarioID));   
+    }
+
+    @PutMapping("/equipos/{id}/alumnos/{id}/delete")
+    public ResponseEntity<Equipo> eliminarAlumno(@PathVariable Integer equipoID, Integer usuarioID) {
+        return ResponseEntity.ok().body(equipoService.eliminarAlumno(equipoID, usuarioID));   
+    }
+
     @DeleteMapping("/equipos/{id}")
     public ResponseEntity<Void> eliminarEquipo(@PathVariable Integer id) {
         equipoService.eliminarEquipo(id);
