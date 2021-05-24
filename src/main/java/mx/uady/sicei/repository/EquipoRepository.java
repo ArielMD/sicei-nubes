@@ -8,6 +8,5 @@ import mx.uady.sicei.model.Equipo;
 
 @Repository
 public interface EquipoRepository extends CrudRepository<Equipo, Integer> {
-    List<Equipo> findAll();
-    Equipo findbyId(Integer id);
+
 }

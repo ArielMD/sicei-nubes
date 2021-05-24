@@ -12,9 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import mx.uady.sicei.exception.NotFoundException;
 import mx.uady.sicei.model.Alumno;
 import mx.uady.sicei.model.Equipo;
+import mx.uady.sicei.model.Tutoria;
 import mx.uady.sicei.model.Usuario;
 import mx.uady.sicei.model.request.AlumnoRequest;
 import mx.uady.sicei.repository.AlumnoRepository;
+import mx.uady.sicei.repository.EquipoRepository;
+import mx.uady.sicei.repository.TutoriaRepository;
 import mx.uady.sicei.repository.UsuarioRepository;
 
 @Service
@@ -25,6 +28,12 @@ public class AlumnoService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private TutoriaRepository tutoriaRepository;
+
+    @Autowired
+    private EquipoRepository equipoRepository;
 
     public List<Alumno> getAlumnos() {
 
@@ -57,11 +66,9 @@ public class AlumnoService {
         alumno.setNombre(request.getNombre());
         alumno.setLicenciatura(request.getLicenciatura());
 
-        // if(!validarEquipo(request.getEquipo()).present){
-        // throw new NotFoundException()
-        // }
+        Equipo equipo = validarEquipo(request.getEquipo());
 
-        // alumno.setEquipo(request.getEquipo());
+        alumno.setEquipo(equipo);
 
         Usuario usuario = new Usuario();
 
@@ -73,25 +80,31 @@ public class AlumnoService {
         alumno.setUsuario(usuario);
 
         usuario = usuarioRepository.save(usuario);
-        alumno = alumnoRepository.save(alumno); // INSERT
+        alumno = alumnoRepository.save(alumno);
 
         return alumno;
     }
 
-    // public Optional validarEquipo(Integer equipoID) {
-    // Optional<Equipo> op = equipoRepository.findById(equipoID);
-    // return op;
-    // }
+    public Equipo validarEquipo(Integer equipoID) {
+        Optional<Equipo> op = equipoRepository.findById(equipoID);
+
+        if (!op.isPresent()) {
+            throw new NotFoundException("El equipo ingresado no existe");
+        }
+
+        return op.get();
+    }
 
     @Transactional
     public Alumno actualizarAlumno(Integer id, AlumnoRequest request) {
-        // Validar equipo
+
+        Equipo equipo = validarEquipo(request.getEquipo());
 
         Alumno alumnoEncontrado = getAlumno(id);
 
         alumnoEncontrado.setLicenciatura(request.getLicenciatura());
         alumnoEncontrado.setNombre(request.getNombre());
-        // alumnoEncontrado.setEquipo();
+        alumnoEncontrado.setEquipo(equipo);
 
         alumnoRepository.save(alumnoEncontrado);
 
@@ -102,7 +115,11 @@ public class AlumnoService {
     public void eliminarAlumno(Integer id) {
         Usuario usuarioEliminar = getAlumno(id).getUsuario();
 
-        // Validar que no existan tutorias
+        List<Tutoria> tutorias = tutoriaRepository.findByAlumnoId(id);
+
+        if (!tutorias.isEmpty()) {
+            throw new NotFoundException("El Alumno tiene tutorias activas");
+        }
 
         usuarioRepository.delete(usuarioEliminar);
 

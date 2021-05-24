@@ -2,10 +2,12 @@ package mx.uady.sicei.service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import mx.uady.sicei.exception.NotFoundException;
 import mx.uady.sicei.model.Equipo;
 import mx.uady.sicei.model.request.EquipoRequest;
 import mx.uady.sicei.repository.EquipoRepository;
@@ -25,12 +27,16 @@ public class EquipoService {
     }
 
     public Equipo getEquipo(Integer id) {
-        Equipo equipo = equipoRepository.findbyId(id);
-    
-        return equipo;
-      }
+        Optional<Equipo> op = equipoRepository.findById(id);
 
-    public Equipo crearEquipo(EquipoRequest request){
+        if (!op.isPresent()) {
+            throw new NotFoundException("No se encontro el equipo");
+        }
+
+        return op.get();
+    }
+
+    public Equipo crearEquipo(EquipoRequest request) {
         Equipo equipo = new Equipo();
         equipo.setId(request.getId());
         equipo = equipoRepository.save(equipo);
@@ -38,7 +44,7 @@ public class EquipoService {
         return equipo;
     }
 
-    public Equipo actualizarEquipo(Integer id, EquipoRequest request){
+    public Equipo actualizarEquipo(Integer id, EquipoRequest request) {
         Equipo equipo = getEquipo(id);
         equipo.setAlumnos(request.getAlumnos());
         equipo.setModelo(request.getModelo());
@@ -48,8 +54,8 @@ public class EquipoService {
 
     public void eliminarEquipo(Integer id) {
         Equipo equipo = getEquipo(id);
-    
+
         equipoRepository.delete(equipo);
-      }
-    
+    }
+
 }
