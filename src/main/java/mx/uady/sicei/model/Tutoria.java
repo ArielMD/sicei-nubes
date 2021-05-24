@@ -15,11 +15,12 @@ public class Tutoria {
   @EmbeddedId
   private TutoriaLlave id;
 
+  /*
   @ManyToOne
   private Alumno alumno;
 
   @ManyToOne
-  private Profesor profesor;
+  private Profesor profesor;*/
 
   @Column(name = "horas")
   private Integer horas;
@@ -53,9 +54,9 @@ public class Tutoria {
       "{" +
       "id:" +
       "{ 'id_alumno':" +
-        this.id.getIdAlumno() +
+        this.id.getAlumnoId() +
       "'id_profesor': " +
-        this.id.getIdProfesor() +
+        this.id.getProfesorId() +
       "}" +
       "'horas': " +
       this.horas +
