@@ -21,10 +21,10 @@ public class Equipo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name = "modelo")
     private String modelo;
 
-    @OneToMany(mappedBy = "equipo", orphanRemoval = true)
+    @OneToMany(mappedBy = "equipo")
     private List<Alumno> alumnos;
 
     public Equipo() {
