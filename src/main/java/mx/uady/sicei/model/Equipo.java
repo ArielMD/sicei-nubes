@@ -52,9 +52,6 @@ public class Equipo {
 
     @Override
     public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", modelo='" + getModelo() + "'" +
-            "}";
+        return "{" + " id='" + getId() + "'" +  ", modelo='" + getModelo() + "'" + "}";
     }
 }

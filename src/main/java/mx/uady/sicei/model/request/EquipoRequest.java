@@ -14,7 +14,6 @@ public class EquipoRequest {
     @Size(min = 1, max = 255)
     private String modelo;
 
-    @NotNull
     private List<Alumno> alumnos;
 
     public EquipoRequest() {
@@ -42,6 +41,11 @@ public class EquipoRequest {
 
     public void setAlumnos(List<Alumno> alumnos) {
         this.alumnos = alumnos;
+    }
+
+    @Override
+    public String toString() {
+        return "{" + " id='" + getId() + "'" +  ", modelo='" + getModelo() + "'" + "}";
     }
 
 }
