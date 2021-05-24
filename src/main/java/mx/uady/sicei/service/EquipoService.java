@@ -1,4 +1,5 @@
 package mx.uady.sicei.service;
+import mx.uady.sicei.exception.NotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mx.uady.sicei.model.Equipo;
+import mx.uady.sicei.model.Alumno;
 import mx.uady.sicei.model.request.EquipoRequest;
 import mx.uady.sicei.repository.EquipoRepository;
 
@@ -48,7 +50,11 @@ public class EquipoService {
 
     public void eliminarEquipo(Integer id) {
         Equipo equipo = getEquipo(id);
-    
+        List<Alumno> alumnos = equipo.getAlumnos();
+
+        if (!alumnos.isEmpty()) {
+            throw new NotFoundException("Aun hay alumnos en este equipo");
+        }
         equipoRepository.delete(equipo);
       }
     
