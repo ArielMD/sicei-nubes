@@ -53,9 +53,9 @@ public class EquipoService {
 
     public Equipo actualizarEquipo(Integer id, EquipoRequest request) {
         Equipo equipo = getEquipo(id);
-        equipo.setId(request.getId());
+        
         equipo.setModelo(request.getModelo());
-        equipoRepository.save(equipo);
+        equipo = equipoRepository.save(equipo);
         return equipo;
     }
 
