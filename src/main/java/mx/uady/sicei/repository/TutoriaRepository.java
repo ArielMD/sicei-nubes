@@ -6,6 +6,6 @@ import mx.uady.sicei.model.TutoriaLlave;
 import org.springframework.data.repository.CrudRepository;
 
 public interface TutoriaRepository extends CrudRepository<Tutoria, TutoriaLlave> {
-  List<Tutoria> findByIdAlumno(Integer idAlumno);
-  List<Tutoria> findByIdProfesor(Integer idProfesor);
+  List<Tutoria> findByAlumnoId(Integer alumnoId);
+  List<Tutoria> findByProfesorId(Integer profesorId);
 }
