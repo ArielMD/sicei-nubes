@@ -46,23 +46,21 @@ public class TutoriaService {
     return tutoriaEncontrada.get();
   }
 
-  /*
-  public List<Tutoria> getTutoriaByIdAlumno(Integer idAlumno) {
+  public List<Tutoria> getTutoriaByIdAlumno(Integer alumnoId) {
     List<Tutoria> tutorias = new LinkedList<>();
 
-    tutorias = tutoriaRepository.findByIdAlumno(idAlumno);
+    tutorias = tutoriaRepository.findByAlumnoId(alumnoId);
 
     return tutorias;
   }
 
-  public List<Tutoria> getTutoriaByIdProfesor(Integer idProfesor) {
+  public List<Tutoria> getTutoriaByIdProfesor(Integer profesorId) {
     List<Tutoria> tutorias = new LinkedList<>();
 
-    tutorias = tutoriaRepository.findByIdProfesor(idProfesor);
+    tutorias = tutoriaRepository.findByProfesorId(profesorId);
 
     return tutorias;
   }
-  */
 
   @Transactional
   public Tutoria crearTutoria(TutoriaRequest request) {
@@ -70,11 +68,11 @@ public class TutoriaService {
     Tutoria tutoria = new Tutoria();
 
     if( !alumnoExiste(request.getId()) ) {
-      throw new NotFoundException("La entidad Alumno no encontrada.");
+      throw new NotFoundException("La entidad Alumno no pudo ser encontrada.");
     }
 
     if( !profesorExiste(request.getId()) ) {
-      throw new NotFoundException("La entidad Maestro no encontrada.");
+      throw new NotFoundException("La entidad Maestro no pudo ser encontrada.");
     }
 
     tutoria.setId(request.getId());

@@ -1,10 +1,9 @@
 package mx.uady.sicei.model;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -15,12 +14,13 @@ public class Tutoria {
   @EmbeddedId
   private TutoriaLlave id;
 
-  /*
   @ManyToOne
+  @JoinColumn(name="id_alumno", insertable = false, updatable = false)
   private Alumno alumno;
 
   @ManyToOne
-  private Profesor profesor;*/
+  @JoinColumn(name="id_profesor", insertable = false, updatable = false)
+  private Profesor profesor;
 
   @Column(name = "horas")
   private Integer horas;
