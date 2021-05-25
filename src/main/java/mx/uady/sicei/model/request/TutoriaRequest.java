@@ -34,17 +34,6 @@ public class TutoriaRequest {
 
   @Override
   public String toString() {
-    return (
-      "{" +
-      "id:" +
-      "{ 'id_alumno':" +
-        this.id.getAlumnoId() +
-      "'id_profesor': " +
-        this.id.getProfesorId() +
-      "}" +
-      "'horas': " +
-      this.horas +
-      "}"
-    );
+    return ( "{" + this.getId().getAlumnoId() + "," + this.getId().getProfesorId() + "," + this.horas + "}");
   }
 }

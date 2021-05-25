@@ -7,11 +7,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "tutorias")
 public class Tutoria {
 
   @EmbeddedId
+  @JsonIgnore
   private TutoriaLlave id;
 
   @ManyToOne
@@ -48,19 +51,24 @@ public class Tutoria {
     this.horas = horas;
   }
 
+  public Alumno getAlumno() {
+    return this.alumno;
+  }
+
+  public void setAlumno(Alumno alumno) {
+    this.alumno = alumno;
+  }
+
+  public Profesor getProfesor() {
+    return this.profesor;
+  }
+
+  public void setProfesor(Profesor profesor) {
+    this.profesor = profesor;
+  }
+
   @Override
   public String toString() {
-    return (
-      "{" +
-      "id:" +
-      "{ 'id_alumno':" +
-        this.id.getAlumnoId() +
-      "'id_profesor': " +
-        this.id.getProfesorId() +
-      "}" +
-      "'horas': " +
-      this.horas +
-      "}"
-    );
+    return ( "{" + this.getAlumno() + "," + this.getProfesor() + "," + this.horas + "}");
   }
 }
