@@ -67,31 +67,36 @@ public class TutoriaService {
 
     Tutoria tutoria = new Tutoria();
 
-    if( !alumnoExiste(request.getId()) ) {
-      throw new NotFoundException("La entidad Alumno no pudo ser encontrada.");
-    }
-
-    if( !profesorExiste(request.getId()) ) {
-      throw new NotFoundException("La entidad Maestro no pudo ser encontrada.");
-    }
+    Alumno alumno = alumnoExiste(request.getId().getAlumnoId());
+    Profesor profesor = profesorExiste(request.getId().getProfesorId());
 
     tutoria.setId(request.getId());
+    tutoria.setAlumno(alumno);
+    tutoria.setProfesor(profesor);
     tutoria.setHoras(request.getHoras());
     tutoria = tutoriaRepository.save(tutoria);
 
     return tutoria;
   }
 
-  private boolean alumnoExiste(TutoriaLlave id) {
-    Optional<Alumno> alumnoExiste = alumnoRepository.findById(id.getAlumnoId());
+  private Alumno alumnoExiste(Integer alumnoId) {
+    Optional<Alumno> alumnoExiste = alumnoRepository.findById(alumnoId);
 
-    return alumnoExiste.isPresent();
+    if(!alumnoExiste.isPresent()) {
+      throw new NotFoundException("La entidad Alumno no pudo ser encontrada.");
+    }
+
+    return alumnoExiste.get();
   }
 
-  private boolean profesorExiste(TutoriaLlave id) {
-    Optional<Profesor> profesorExiste = profesorRepository.findById(id.getProfesorId());
+  private Profesor profesorExiste(Integer profesorId) {
+    Optional<Profesor> profesorExiste = profesorRepository.findById(profesorId);
 
-    return profesorExiste.isPresent();
+    if(!profesorExiste.isPresent()) {
+      throw new NotFoundException("La entidad Maestro no pudo ser encontrada.");
+    }
+
+    return profesorExiste.get();
   }
 
   @Transactional
