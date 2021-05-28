@@ -18,17 +18,16 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http.csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
                 .csrf().disable()
                 .httpBasic().disable() // Authorization: Basic base64(usuario:contrasena) x.x
             .authorizeRequests()
-                .antMatchers("/login", "/register").permitAll()
-                .antMatchers(HttpMethod.POST, "/login").permitAll()
+                .antMatchers("/api/login").permitAll() //access to login
+                .antMatchers(HttpMethod.POST, "/api/usuarios").permitAll() //access to sign up
                 .anyRequest().authenticated()
             .and()
-                .addFilterBefore(tokenFilter, BasicAuthenticationFilter.class);
-       
+                .addFilterAfter(tokenFilter, BasicAuthenticationFilter.class);
     }
 }
