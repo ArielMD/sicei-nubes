@@ -29,11 +29,11 @@ public class UsuarioRest {
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping("/quienSoy") // /self
+    /*@GetMapping("/quienSoy") // EJEMPLO
     public ResponseEntity<Usuario> getLoggedUser() {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(usuario);
-    }
+    }*/
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUsuario(@RequestBody @Valid LoginRequest request) {
