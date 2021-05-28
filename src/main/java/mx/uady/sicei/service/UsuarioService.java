@@ -51,16 +51,15 @@ public class UsuarioService {
         StringBuilder builder;
         String alphaNumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789";
 
-        builder = new StringBuilder(11);
+        builder = new StringBuilder(15);
 
-        for (int m = 0; m < 11; m++){
-            int myindex = (int) (10 * Math.random());
+        for (int m = 0; m < 15; m++){
+            int myindex = (int) (alphaNumeric.length() * Math.random());
             builder.append(alphaNumeric.charAt(myindex));
         }
 
         return builder.toString();
     }
-   
    
     @Transactional //(readOnly = true)
     public List<Usuario> getUsuarios() {
