@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 import mx.uady.sicei.model.Usuario;
+import mx.uady.sicei.model.request.LoginRequest;
 import mx.uady.sicei.model.request.UsuarioRequest;
 import mx.uady.sicei.service.UsuarioService;
 
@@ -26,6 +28,17 @@ public class UsuarioRest {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    /*@GetMapping("/quienSoy") // EJEMPLO
+    public ResponseEntity<Usuario> getLoggedUser() {
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(usuario);
+    }*/
+
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUsuario(@RequestBody @Valid LoginRequest request) {
+        return ResponseEntity.ok().body(usuarioService.loginUser(request));
+    }
 
     @GetMapping("/usuarios")
     public ResponseEntity<List<Usuario>> obtenerUsuario() {

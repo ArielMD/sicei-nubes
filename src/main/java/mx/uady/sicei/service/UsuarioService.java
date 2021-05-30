@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import mx.uady.sicei.exception.NotFoundException;
 import mx.uady.sicei.model.Alumno;
 import mx.uady.sicei.model.Usuario;
+import mx.uady.sicei.model.request.LoginRequest;
 import mx.uady.sicei.model.request.UsuarioRequest;
 import mx.uady.sicei.repository.AlumnoRepository;
 import mx.uady.sicei.repository.UsuarioRepository;
@@ -25,6 +26,41 @@ public class UsuarioService {
     @Autowired
     private AlumnoRepository alumnoRepository;
 
+    public String loginUser(LoginRequest request) { //El String que retorna es el token
+        
+        Usuario usuarioLogeado = usuarioRepository.findByUsuario(request.getEmail());
+
+        if(usuarioLogeado.equals(null)){
+            throw new NotFoundException("Su usuario es incorrecto");
+        } else if(!usuarioLogeado.getPassword().equals(request.getPassword())){
+            throw new NotFoundException("Su contraseña es incorrecta");
+        }
+
+        String token = getToken();
+
+        usuarioLogeado.setUsuario(request.getEmail());
+        usuarioLogeado.setPassword(request.getPassword());
+        usuarioLogeado.setToken(token);
+
+        usuarioRepository.save(usuarioLogeado);
+
+        return token;
+    }
+
+    private String getToken() {
+        StringBuilder builder;
+        String alphaNumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789";
+
+        builder = new StringBuilder(15);
+
+        for (int m = 0; m < 15; m++){
+            int myindex = (int) (alphaNumeric.length() * Math.random());
+            builder.append(alphaNumeric.charAt(myindex));
+        }
+
+        return builder.toString();
+    }
+   
     @Transactional //(readOnly = true)
     public List<Usuario> getUsuarios() {
         return usuarioRepository.findAll();
