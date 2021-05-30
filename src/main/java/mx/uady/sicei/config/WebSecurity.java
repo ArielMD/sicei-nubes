@@ -25,7 +25,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable() // Authorization: Basic base64(usuario:contrasena) x.x
             .authorizeRequests()
                 .antMatchers("/api/login").permitAll() //access to login
-                .antMatchers(HttpMethod.POST, "/api/usuarios").permitAll() //access to sign up
+                .antMatchers(HttpMethod.POST, "/api/register").permitAll() //access to sign up
                 .anyRequest().authenticated()
             .and()
                 .addFilterAfter(tokenFilter, BasicAuthenticationFilter.class);

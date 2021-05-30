@@ -46,7 +46,7 @@ public class AlumnoRest {
     }
 
     // POST /api/alumnos
-    @PostMapping("/alumnos")
+    @PostMapping("/register")
     public ResponseEntity<Alumno> postAlumnos(@RequestBody @Valid AlumnoRequest request) throws URISyntaxException {
 
         // RequestBody le indica a Java que estamos esperando un request que cumpla con

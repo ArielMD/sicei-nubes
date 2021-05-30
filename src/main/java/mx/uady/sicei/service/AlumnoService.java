@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import mx.uady.sicei.exception.NotFoundException;
+import mx.uady.sicei.exception.UnprocessableEntity;
 import mx.uady.sicei.model.Alumno;
+import mx.uady.sicei.model.Encriptacion;
 import mx.uady.sicei.model.Equipo;
 import mx.uady.sicei.model.Tutoria;
 import mx.uady.sicei.model.Usuario;
@@ -61,19 +63,24 @@ public class AlumnoService {
     @Transactional
     public Alumno crearAlumno(AlumnoRequest request) {
 
+        validarUsuario(request);
+
         Alumno alumno = new Alumno();
 
         alumno.setNombre(request.getNombre());
         alumno.setLicenciatura(request.getLicenciatura());
 
-        Equipo equipo = validarEquipo(request.getEquipo());
-
-        alumno.setEquipo(equipo);
+        if(request.getEquipo() != null){
+            Equipo equipo = validarEquipo(request.getEquipo());
+            alumno.setEquipo(equipo);
+        }
 
         Usuario usuario = new Usuario();
 
-        usuario.setUsuario(request.getCorreo());
-        usuario.setPassword("123");
+        usuario.setUsuario(request.getMatricula());
+
+        String pwHash = Encriptacion.encriptar(request.getContrasena());
+        usuario.setPassword(pwHash);
 
         String token = UUID.randomUUID().toString();
         usuario.setToken(token);
@@ -93,6 +100,14 @@ public class AlumnoService {
         }
 
         return op.get();
+    }
+
+    public void validarUsuario(AlumnoRequest request){
+        Usuario usuarioEncontrado = usuarioRepository.findByUsuario(request.getMatricula());
+
+        if(usuarioEncontrado != null){
+            throw new UnprocessableEntity("El usuario ya existe");
+        }
     }
 
     @Transactional
