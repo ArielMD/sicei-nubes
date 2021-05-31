@@ -54,6 +54,13 @@ public class UsuarioRest {
         return ResponseEntity.ok().body(token);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logoutUsuario(){
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        usuarioService.logoutUser(usuario);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/usuarios")
     public ResponseEntity<List<Usuario>> obtenerUsuario() {
         List<Usuario> usuarios = usuarioService.getUsuarios();
