@@ -9,7 +9,7 @@ public class Encriptacion {
     return pwhash;
   }
 
-  static public String desencriptar (String pw, String pwHash){
-    return "s";
+  static public boolean desencriptar (String pw, String pwHash){
+    return  BCrypt.checkpw(pw, pwHash);
   }
 }
