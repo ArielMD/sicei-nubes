@@ -47,6 +47,11 @@ public class UsuarioService {
         return token;
     }
 
+    public void logoutUser(Usuario loggedUser){
+        loggedUser.setToken(null);
+        usuarioRepository.save(loggedUser);
+    }
+
     private String getToken() {
         StringBuilder builder;
         String alphaNumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789";
