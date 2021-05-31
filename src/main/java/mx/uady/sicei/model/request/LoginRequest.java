@@ -7,43 +7,34 @@ public class LoginRequest {
 
     @NotEmpty
     @Size(min = 1, max = 255)
-    private String email;
+    private String matricula;
     
     @NotEmpty
     @Size(min = 1, max = 255)
-    private String password;
+    private String contrasena;
 
 
     public LoginRequest() {}
 
-    public LoginRequest(String email,String password){
-        this.email = email;
-        this.password  = password;
+    public LoginRequest(String matricula,String contrasena){
+        this.matricula = matricula;
+        this.contrasena  = contrasena;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getMatricula() {
+        return matricula;
     }
 
-    public String getPassword() {
-        return password;
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getContrasena() {
+        return contrasena;
     }
 
-    public String getEmail() {
-        return email;
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
-    public LoginRequest email(String email) {
-        this.email = email;
-        return this;
-    }
-
-    public LoginRequest password(String password) {
-        this.password = password;
-        return this;
-    }
 }

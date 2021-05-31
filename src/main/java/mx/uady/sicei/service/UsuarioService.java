@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import mx.uady.sicei.exception.NotFoundException;
 import mx.uady.sicei.model.Alumno;
+import mx.uady.sicei.model.Encriptacion;
 import mx.uady.sicei.model.Usuario;
 import mx.uady.sicei.model.request.LoginRequest;
 import mx.uady.sicei.model.request.UsuarioRequest;
@@ -26,27 +27,37 @@ public class UsuarioService {
     @Autowired
     private AlumnoRepository alumnoRepository;
 
+    public Alumno usuarioActivo(Usuario user) {
+        Alumno usuarioActivo = this.alumnoRepository.findByUsuario_Id(user.getId());
+
+        if (usuarioActivo.equals(null) ) {
+            throw new NotFoundException("No se encuentra el Alumno deseado.");
+        }
+
+        return usuarioActivo;
+    }
+
     public String loginUser(LoginRequest request) { //El String que retorna es el token
         
-        Usuario usuarioLogeado = usuarioRepository.findByUsuario(request.getEmail());
+        Usuario usuarioLoggeado = usuarioRepository.findByUsuario(request.getMatricula());
+        String pwd = request.getContrasena();
+        String pwdHash = usuarioLoggeado.getPassword();
 
-        if(usuarioLogeado.equals(null)){
+        if(usuarioLoggeado.equals(null)){
             throw new NotFoundException("Su usuario es incorrecto");
-        } else if(!usuarioLogeado.getPassword().equals(request.getPassword())){
+        } else if(!Encriptacion.desencriptar(pwd, pwdHash)) {
             throw new NotFoundException("Su contraseña es incorrecta");
         }
 
         String token = getToken();
+        usuarioLoggeado.setToken(token);
 
-        usuarioLogeado.setUsuario(request.getEmail());
-        usuarioLogeado.setPassword(request.getPassword());
-        usuarioLogeado.setToken(token);
-
-        usuarioRepository.save(usuarioLogeado);
+        usuarioRepository.save(usuarioLoggeado);
 
         return token;
     }
 
+    @Transactional
     public void logoutUser(Usuario loggedUser){
         loggedUser.setToken(null);
         usuarioRepository.save(loggedUser);
