@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 import mx.uady.sicei.model.Alumno;
+import mx.uady.sicei.model.Jwt;
 import mx.uady.sicei.model.Usuario;
 import mx.uady.sicei.model.request.LoginRequest;
 import mx.uady.sicei.model.request.UsuarioRequest;
@@ -43,10 +44,10 @@ public class UsuarioRest {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUsuario(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<Jwt> loginUsuario(@RequestBody @Valid LoginRequest request) {
         String token = usuarioService.loginUser(request);
 
-        return ResponseEntity.ok().body(token);
+        return ResponseEntity.ok().body(new Jwt(token));
     }
 
     @PostMapping("/logout")

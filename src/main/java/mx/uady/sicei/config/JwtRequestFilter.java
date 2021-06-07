@@ -31,7 +31,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(jwtToken == null || jwtToken.isEmpty() || !jwtTokenUtil.validateStructure(jwtToken)) {
+        if(jwtToken == null || jwtToken.isEmpty() || !jwtTokenUtil.validateStructure(jwtToken)) { //valida que exista el token y sea válido
             chain.doFilter(request, response);
             return;
         }
@@ -39,7 +39,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
         Usuario usuario = usuarioRepository.findByUsuario(username);
 
-        if(usuario == null || !jwtTokenUtil.validateToken(jwtToken, usuario)) {
+        if(usuario == null || !jwtTokenUtil.validateToken(jwtToken, usuario)) { //valida que el token corresponda a un usuario
+            chain.doFilter(request, response);
+            return;
+        }
+
+        if(usuario.getToken() == null || usuario.getToken().isEmpty()) { //valida que el token existe para el usuario respectivo
             chain.doFilter(request, response);
             return;
         }
