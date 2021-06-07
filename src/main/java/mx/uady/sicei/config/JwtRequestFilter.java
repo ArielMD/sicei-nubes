@@ -4,9 +4,8 @@ import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -14,35 +13,33 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import mx.uady.sicei.model.Usuario;
 import mx.uady.sicei.repository.UsuarioRepository;
 
 @Component
-public class TokenFilter extends GenericFilterBean {
+public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    @Autowired 
+    private JwtTokenUtil jwtTokenUtil;
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        
-        // Authorization: abc
-        // Authorization: def
-        String authHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION); 
-        
-        if(authHeader == null || authHeader.isEmpty()) {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        if(jwtToken == null || jwtToken.isEmpty() || !jwtTokenUtil.validateStructure(jwtToken)) {
             chain.doFilter(request, response);
             return;
         }
 
-        Usuario usuario = usuarioRepository.findByToken(authHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+        Usuario usuario = usuarioRepository.findByUsuario(username);
 
-        if (usuario == null) {
+        if(usuario == null || !jwtTokenUtil.validateToken(jwtToken, usuario)) {
             chain.doFilter(request, response);
             return;
         }
@@ -50,7 +47,6 @@ public class TokenFilter extends GenericFilterBean {
         Authentication authentication = new UsernamePasswordAuthenticationToken(usuario, null, null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        
         chain.doFilter(request, response);
     }
 }
