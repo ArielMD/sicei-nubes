@@ -122,8 +122,11 @@ public class AlumnoService {
 
     @Transactional
     public Alumno actualizarAlumno(Integer id, AlumnoUpdateRequest request) {
-        Alumno alumnoEncontrado = getAlumno(id);
         Alumno alumnoEditado = getAlumno(id);
+        Alumno alumnoEncontrado = new Alumno();
+        alumnoEncontrado.setNombre(alumnoEditado.getNombre());
+        alumnoEncontrado.setLicenciatura(alumnoEditado.getLicenciatura());
+        alumnoEncontrado.setEquipo(alumnoEditado.getEquipo());
 
         alumnoEditado.setLicenciatura(request.getLicenciatura());
         alumnoEditado.setNombre(request.getNombre());
