@@ -1,6 +1,7 @@
 package mx.uady.sicei.model.request;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -28,6 +29,11 @@ public class AlumnoRequest {
     @Email
     @NotEmpty
     private String correo;
+
+    @NotEmpty
+    @NotBlank
+    @Positive
+    private String matricula;
 
     public AlumnoRequest() {
     }
@@ -79,6 +85,14 @@ public class AlumnoRequest {
 
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    public String getMatricula() {
+        return this.matricula;
+    }
+
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
     }
 
     @Override
