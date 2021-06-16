@@ -113,9 +113,9 @@ public class AlumnoService {
     }
 
     public void validarUsuario(AlumnoRequest request) {
-        Usuario usuarioEncontrado = usuarioRepository.findByUsuario(request.getMatricula());
+        Optional<Usuario> usuarioEncontrado = usuarioRepository.findByUsuario(request.getMatricula());
 
-        if (usuarioEncontrado != null) {
+        if (usuarioEncontrado.isPresent()) {
             throw new UnprocessableEntity("El usuario ya existe");
         }
     }
