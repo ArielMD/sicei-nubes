@@ -12,13 +12,11 @@ import mx.uady.sicei.model.Alumno;
 import mx.uady.sicei.model.Profesor;
 import mx.uady.sicei.model.Tutoria;
 import mx.uady.sicei.model.TutoriaLlave;
-import mx.uady.sicei.model.Usuario;
 import mx.uady.sicei.model.request.TutoriaRequest;
 import mx.uady.sicei.repository.AlumnoRepository;
 import mx.uady.sicei.repository.ProfesorRepository;
 import mx.uady.sicei.repository.TutoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -72,10 +70,11 @@ public class TutoriaService {
 
     Tutoria tutoria = new Tutoria();
 
-    Alumno alumno = alumnoExiste(request.getId().getAlumnoId());
-    Profesor profesor = profesorExiste(request.getId().getProfesorId());
+    Alumno alumno = alumnoExiste(request.getAlumnoId());
+    Profesor profesor = profesorExiste(request.getProfesorId());
 
-    tutoria.setId(request.getId());
+    TutoriaLlave id = new TutoriaLlave(request.getAlumnoId(), request.getProfesorId());
+    tutoria.setId(id);
     tutoria.setAlumno(alumno);
     tutoria.setProfesor(profesor);
     tutoria.setHoras(request.getHoras());
@@ -109,7 +108,7 @@ public class TutoriaService {
     Tutoria tutoriaEliminada = getTutoria(id);
 
     try {
-      emailService.tutoriaAlert(tutoriaEliminada.getAlumno().getUsuario().getUsuario(), tutoriaEliminada);
+      emailService.tutoriaAlert(tutoriaEliminada.getAlumno().getUsuario().getEmail(), tutoriaEliminada);
     } catch (IOException e) {
       e.printStackTrace();
     }
