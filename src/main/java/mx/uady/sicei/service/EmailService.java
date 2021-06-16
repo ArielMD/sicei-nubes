@@ -40,14 +40,24 @@ public class EmailService {
 
   @Async
   public void tutoriaAlert(String email, Tutoria tutoria) throws IOException {
-
     String mensaje = "Se ha eliminado la tutoria\n" + "La tutoría a las " + tutoria.getHoras() + " con el "
         + tutoria.getProfesor().getNombre() + " se ha cancelado";
     sendEMail(email, "Tutoria eliminada", mensaje);
   }
 
-  public void editAlert() {
+  @Async
+  public void editAlert(String email, Alumno alumno, Alumno alumnoEditado) throws IOException {
+    String mensaje = "Se ha realizado un cambio en su cuenta " + alumno.getUsuario().getUsuario() +
+    "\nde" +
+    "\nNombre: " + alumno.getNombre() +
+    "\nLicenciatura: " + alumno.getLicenciatura() +
+    "\nEquipo: " + alumno.getEquipo().getModelo() +
+    "\na" +
+    "\nNombre: " + alumnoEditado.getNombre() +
+    "\nLicenciatura: " + alumnoEditado.getLicenciatura() +
+    "\nEquipo: " + alumnoEditado.getEquipo().getModelo();
 
+    sendEMail(email, "Campo Editado", mensaje);
   }
 
   public void sendEMail(String email, String subject, String mensaje) throws IOException {
