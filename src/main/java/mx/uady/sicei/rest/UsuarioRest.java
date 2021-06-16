@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,21 +35,21 @@ public class UsuarioRest {
     @GetMapping("/self")
     public ResponseEntity<Alumno> getLoggedUser() {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        
+
         Alumno alumno = this.usuarioService.usuarioActivo(usuario);
 
         return ResponseEntity.ok().body(alumno);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUsuario(@RequestBody @Valid LoginRequest request) {
-        String token = usuarioService.loginUser(request);
-
+    public ResponseEntity<String> loginUsuario(@RequestHeader(value = "User-Agent") String userAgent,
+            @RequestBody @Valid LoginRequest request) {
+        String token = usuarioService.loginUser(request, userAgent);
         return ResponseEntity.ok().body(token);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logoutUsuario(){
+    public ResponseEntity<Void> logoutUsuario() {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         usuarioService.logoutUser(usuario);
         return ResponseEntity.ok().build();

@@ -1,32 +1,34 @@
 package mx.uady.sicei.model.request;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class LoginRequest {
 
-    @NotEmpty
-    @Size(min = 1, max = 255)
-    private String matricula;
-    
+    @NotNull
+    @Email
+    private String usuario;
+
     @NotEmpty
     @Size(min = 1, max = 255)
     private String contrasena;
 
-
-    public LoginRequest() {}
-
-    public LoginRequest(String matricula,String contrasena){
-        this.matricula = matricula;
-        this.contrasena  = contrasena;
+    public LoginRequest() {
     }
 
-    public String getMatricula() {
-        return matricula;
+    public LoginRequest(String usuario, String contrasena) {
+        this.usuario = usuario;
+        this.contrasena = contrasena;
     }
 
-    public void setMatricula(String matricula) {
-        this.matricula = matricula;
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public String getContrasena() {

@@ -1,10 +1,13 @@
 package mx.uady.sicei.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
+
+import com.sendgrid.helpers.mail.objects.Email;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,9 @@ public class UsuarioService {
     @Autowired
     private AlumnoRepository alumnoRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     public Alumno usuarioActivo(Usuario user) {
         Alumno usuarioActivo = this.alumnoRepository.findByUsuario_Id(user.getId());
 
@@ -37,9 +43,9 @@ public class UsuarioService {
         return usuarioActivo;
     }
 
-    public String loginUser(LoginRequest request) { //El String que retorna es el token
-        
-        Usuario usuarioLoggeado = usuarioRepository.findByUsuario(request.getMatricula());
+    public String loginUser(LoginRequest request, String userAgent) { //El String que retorna es el token
+
+        Usuario usuarioLoggeado = usuarioRepository.findByUsuario(request.getUsuario());
         String pwd = request.getContrasena();
         String pwdHash = usuarioLoggeado.getPassword();
 
@@ -53,6 +59,13 @@ public class UsuarioService {
         usuarioLoggeado.setToken(token);
 
         usuarioRepository.save(usuarioLoggeado);
+
+        try {
+            emailService.loginAlert(request.getUsuario(), userAgent);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         return token;
     }
@@ -76,7 +89,7 @@ public class UsuarioService {
 
         return builder.toString();
     }
-   
+
     @Transactional //(readOnly = true)
     public List<Usuario> getUsuarios() {
         return usuarioRepository.findAll();
@@ -93,7 +106,7 @@ public class UsuarioService {
         usuarioCrear.setToken(token);
 
         Usuario usuarioGuardado = usuarioRepository.save(usuarioCrear);
-        
+
         Alumno alumno = new Alumno();
 
         alumno.setNombre(request.getNombre());
@@ -117,17 +130,17 @@ public class UsuarioService {
 
     public Usuario actualizarUsuario(Integer id, UsuarioRequest request) {
         Usuario usuario = getUsuario(id);
-    
+
         usuario.setPassword(request.getPassword());
         usuario.setUsuario(request.getUsuario());
         usuarioRepository.save(usuario);
-    
+
         return usuario;
       }
 
     public void eliminarUsuario(Integer id) {
         Usuario usuario = getUsuario(id);
-    
+
         usuarioRepository.delete(usuario);
       }
 
