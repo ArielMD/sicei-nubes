@@ -25,11 +25,13 @@ public class EmailService {
   @Value("${email.sendgrid}")
   private String sendgridEmail;
 
+  @Async
   public void WelcomeEmail(String email, Alumno alumno) throws IOException {
     String mensaje = "Bienvenido a la aplicación sicei-app" + alumno.getNombre();
     sendEMail(email, "Registro de usuario", mensaje);
   }
 
+  @Async
   public void loginAlert(String email, String userAgent) throws IOException {
     String mensaje = "Se ha iniciado sesión en el dispositivo " + userAgent;
     sendEMail(email, "Alerta de incio de sesión", mensaje);
@@ -43,7 +45,7 @@ public class EmailService {
 
   }
 
-  @Async
+
   public void sendEMail(String email, String subject, String mensaje) throws IOException {
     Mail mail = prepareMail(email, subject, mensaje);
 

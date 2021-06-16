@@ -12,6 +12,7 @@ import com.sendgrid.helpers.mail.objects.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import mx.uady.sicei.config.JwtTokenUtil;
 import mx.uady.sicei.exception.NotFoundException;
 import mx.uady.sicei.model.Alumno;
 import mx.uady.sicei.model.Encriptacion;
@@ -32,6 +33,9 @@ public class UsuarioService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     public Alumno usuarioActivo(Usuario user) {
         Alumno usuarioActivo = this.alumnoRepository.findByUsuario_Id(user.getId());
@@ -55,7 +59,7 @@ public class UsuarioService {
             throw new NotFoundException("Su contraseña es incorrecta");
         }
 
-        String token = getToken();
+        String token = jwtTokenUtil.generateToken(usuarioLoggeado);
         usuarioLoggeado.setToken(token);
 
         usuarioRepository.save(usuarioLoggeado);
@@ -63,7 +67,6 @@ public class UsuarioService {
         try {
             emailService.loginAlert(request.getUsuario(), userAgent);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -74,20 +77,6 @@ public class UsuarioService {
     public void logoutUser(Usuario loggedUser){
         loggedUser.setToken(null);
         usuarioRepository.save(loggedUser);
-    }
-
-    private String getToken() {
-        StringBuilder builder;
-        String alphaNumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789";
-
-        builder = new StringBuilder(15);
-
-        for (int m = 0; m < 15; m++){
-            int myindex = (int) (alphaNumeric.length() * Math.random());
-            builder.append(alphaNumeric.charAt(myindex));
-        }
-
-        return builder.toString();
     }
 
     @Transactional //(readOnly = true)

@@ -2,6 +2,8 @@ package mx.uady.sicei.rest;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 import mx.uady.sicei.model.Alumno;
+import mx.uady.sicei.model.Jwt;
 import mx.uady.sicei.model.Usuario;
 import mx.uady.sicei.model.request.LoginRequest;
 import mx.uady.sicei.model.request.UsuarioRequest;
@@ -49,9 +52,10 @@ public class UsuarioRest {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logoutUsuario() {
+    public ResponseEntity<Void> logoutUsuario(HttpServletRequest request, HttpServletResponse response){
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         usuarioService.logoutUser(usuario);
+
         return ResponseEntity.ok().build();
     }
 
