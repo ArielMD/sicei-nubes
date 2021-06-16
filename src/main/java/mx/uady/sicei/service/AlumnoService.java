@@ -1,5 +1,6 @@
 package mx.uady.sicei.service;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +38,9 @@ public class AlumnoService {
     @Autowired
     private EquipoRepository equipoRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     public List<Alumno> getAlumnos() {
 
         List<Alumno> alumnos = new LinkedList<>();
@@ -70,14 +74,14 @@ public class AlumnoService {
         alumno.setNombre(request.getNombre());
         alumno.setLicenciatura(request.getLicenciatura());
 
-        if(request.getEquipo() != null){
+        if (request.getEquipo() != null) {
             Equipo equipo = validarEquipo(request.getEquipo());
             alumno.setEquipo(equipo);
         }
 
         Usuario usuario = new Usuario();
 
-        usuario.setUsuario(request.getMatricula());
+        usuario.setUsuario(request.getCorreo());
 
         String pwHash = Encriptacion.encriptar(request.getContrasena());
         usuario.setPassword(pwHash);
@@ -85,6 +89,13 @@ public class AlumnoService {
         String token = UUID.randomUUID().toString();
         usuario.setToken(token);
         alumno.setUsuario(usuario);
+
+        try {
+            emailService.sendEMail(request.getCorreo(), "Registro de usuario",
+                    "Bienvenido a Sicei App " + alumno.getNombre());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         usuario = usuarioRepository.save(usuario);
         alumno = alumnoRepository.save(alumno);
@@ -102,10 +113,10 @@ public class AlumnoService {
         return op.get();
     }
 
-    public void validarUsuario(AlumnoRequest request){
-        Usuario usuarioEncontrado = usuarioRepository.findByUsuario(request.getMatricula());
+    public void validarUsuario(AlumnoRequest request) {
+        Usuario usuarioEncontrado = usuarioRepository.findByUsuario(request.getCorreo());
 
-        if(usuarioEncontrado != null){
+        if (usuarioEncontrado != null) {
             throw new UnprocessableEntity("El usuario ya existe");
         }
     }
