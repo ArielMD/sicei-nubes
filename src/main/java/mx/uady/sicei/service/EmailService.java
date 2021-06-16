@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import mx.uady.sicei.model.Alumno;
+import mx.uady.sicei.model.Tutoria;
 
 @Service
 public class EmailService {
@@ -37,14 +38,17 @@ public class EmailService {
     sendEMail(email, "Alerta de incio de sesión", mensaje);
   }
 
-  public void tutoriaAlert() {
+  @Async
+  public void tutoriaAlert(String email, Tutoria tutoria) throws IOException {
 
+    String mensaje = "Se ha eliminado la tutoria\n" + "La tutoría a las " + tutoria.getHoras() + " con el "
+        + tutoria.getProfesor().getNombre() + " se ha cancelado";
+    sendEMail(email, "Tutoria eliminada", mensaje);
   }
 
   public void editAlert() {
 
   }
-
 
   public void sendEMail(String email, String subject, String mensaje) throws IOException {
     Mail mail = prepareMail(email, subject, mensaje);
