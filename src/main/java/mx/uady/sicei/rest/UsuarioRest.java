@@ -45,10 +45,9 @@ public class UsuarioRest {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUsuario(@RequestHeader(value = "User-Agent") String userAgent,
-            @RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<Jwt> loginUsuario(@RequestHeader(value = "User-Agent") String userAgent, @RequestBody @Valid LoginRequest request) {
         String token = usuarioService.loginUser(request, userAgent);
-        return ResponseEntity.ok().body(token);
+        return ResponseEntity.ok().body(new Jwt(token));
     }
 
     @PostMapping("/logout")
