@@ -47,17 +47,25 @@ public class EmailService {
 
   @Async
   public void editAlert(String email, Alumno alumno, Alumno alumnoEditado) throws IOException {
-    String mensaje = "Se ha realizado un cambio en su cuenta " + alumno.getUsuario().getUsuario() +
-    "\nde" +
+    String inicio =  "Se ha realizado un cambio en la cuenta " + alumnoEditado.getUsuario().getUsuario();
+    String cuerpoInicio = "\nde" +
     "\nNombre: " + alumno.getNombre() +
-    "\nLicenciatura: " + alumno.getLicenciatura() +
-    "\nEquipo: " + alumno.getEquipo().getModelo() +
-    "\na" +
-    "\nNombre: " + alumnoEditado.getNombre() +
-    "\nLicenciatura: " + alumnoEditado.getLicenciatura() +
-    "\nEquipo: " + alumnoEditado.getEquipo().getModelo();
+    "\nLicenciatura: " + alumno.getLicenciatura();
 
-    sendEMail(email, "Campo Editado", mensaje);
+    if(alumno.getEquipo() != null) {
+      cuerpoInicio = cuerpoInicio + 
+      "\nEquipo: " + alumno.getEquipo().getModelo();
+    }
+
+    String cuerpoFinal = "\na" +
+    "\nNombre: " + alumnoEditado.getNombre() +
+    "\nLicenciatura: " + alumnoEditado.getLicenciatura();
+
+    if(alumnoEditado.getEquipo() != null) {
+      cuerpoFinal = cuerpoFinal + 
+      "\nEquipo: " + alumnoEditado.getEquipo().getModelo();
+    }
+    sendEMail(email, "Campo Editado", inicio + cuerpoInicio + cuerpoFinal);
   }
 
   public void sendEMail(String email, String subject, String mensaje) throws IOException {

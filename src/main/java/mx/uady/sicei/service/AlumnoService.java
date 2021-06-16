@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +17,7 @@ import mx.uady.sicei.model.Equipo;
 import mx.uady.sicei.model.Tutoria;
 import mx.uady.sicei.model.Usuario;
 import mx.uady.sicei.model.request.AlumnoRequest;
+import mx.uady.sicei.model.request.AlumnoUpdateRequest;
 import mx.uady.sicei.repository.AlumnoRepository;
 import mx.uady.sicei.repository.EquipoRepository;
 import mx.uady.sicei.repository.TutoriaRepository;
@@ -81,13 +81,12 @@ public class AlumnoService {
 
         Usuario usuario = new Usuario();
 
-        usuario.setUsuario(request.getCorreo());
+        usuario.setUsuario(request.getMatricula());
+        usuario.setEmai(request.getCorreo());
 
         String pwHash = Encriptacion.encriptar(request.getContrasena());
         usuario.setPassword(pwHash);
 
-        String token = UUID.randomUUID().toString();
-        usuario.setToken(token);
         alumno.setUsuario(usuario);
 
         try {
@@ -114,7 +113,7 @@ public class AlumnoService {
     }
 
     public void validarUsuario(AlumnoRequest request) {
-        Usuario usuarioEncontrado = usuarioRepository.findByUsuario(request.getCorreo());
+        Usuario usuarioEncontrado = usuarioRepository.findByUsuario(request.getMatricula());
 
         if (usuarioEncontrado != null) {
             throw new UnprocessableEntity("El usuario ya existe");
@@ -122,19 +121,27 @@ public class AlumnoService {
     }
 
     @Transactional
-    public Alumno actualizarAlumno(Integer id, AlumnoRequest request) {
-
-        Equipo equipo = validarEquipo(request.getEquipo());
-
+    public Alumno actualizarAlumno(Integer id, AlumnoUpdateRequest request) {
         Alumno alumnoEncontrado = getAlumno(id);
+        Alumno alumnoEditado = getAlumno(id);
 
-        alumnoEncontrado.setLicenciatura(request.getLicenciatura());
-        alumnoEncontrado.setNombre(request.getNombre());
-        alumnoEncontrado.setEquipo(equipo);
+        alumnoEditado.setLicenciatura(request.getLicenciatura());
+        alumnoEditado.setNombre(request.getNombre());
 
-        alumnoRepository.save(alumnoEncontrado);
+        if (request.getEquipo() != null) {
+            Equipo equipo = validarEquipo(request.getEquipo());
+            alumnoEditado.setEquipo(equipo);
+        }
 
-        return alumnoEncontrado;
+        alumnoEditado = alumnoRepository.save(alumnoEditado);
+
+        try {
+            this.emailService.editAlert(alumnoEditado.getUsuario().getEmail(), alumnoEncontrado, alumnoEditado);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return alumnoEditado;
     }
 
     @Transactional

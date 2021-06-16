@@ -8,7 +8,6 @@ import javax.validation.constraints.Size;
 public class LoginRequest {
 
     @NotNull
-    @Email
     private String usuario;
 
     @NotEmpty

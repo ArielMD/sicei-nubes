@@ -65,7 +65,7 @@ public class UsuarioService {
         usuarioRepository.save(usuarioLoggeado);
 
         try {
-            emailService.loginAlert(request.getUsuario(), userAgent);
+            emailService.loginAlert(usuarioLoggeado.getEmail(), userAgent);
         } catch (IOException e) {
             e.printStackTrace();
         }
