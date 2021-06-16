@@ -40,7 +40,7 @@ public class EmailService {
 
   @Async
   public void tutoriaAlert(String email, Tutoria tutoria) throws IOException {
-    String mensaje = "Se ha eliminado la tutoria\n" + "La tutoría a las " + tutoria.getHoras() + " con el "
+    String mensaje = "Se ha eliminado la tutoria\n" + "La tutoría de duración " + tutoria.getHoras() + " hr(s) con el Profesor"
         + tutoria.getProfesor().getNombre() + " se ha cancelado";
     sendEMail(email, "Tutoria eliminada", mensaje);
   }
