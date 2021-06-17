@@ -69,7 +69,7 @@ public class UsuarioService {
         usuarioRepository.save(usuarioLoggeado);
 
         try {
-            emailService.loginAlert(usuarioLoggeado.getEmail(), userAgent);
+            emailService.sendLoginAlert(usuarioLoggeado.getEmail(), userAgent);
         } catch (IOException e) {
             e.printStackTrace();
         }

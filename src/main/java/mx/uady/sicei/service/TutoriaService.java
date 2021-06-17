@@ -108,7 +108,7 @@ public class TutoriaService {
     Tutoria tutoriaEliminada = getTutoria(id);
 
     try {
-      emailService.tutoriaAlert(tutoriaEliminada.getAlumno().getUsuario().getEmail(), tutoriaEliminada);
+      emailService.sendTutoriaAlert(tutoriaEliminada.getAlumno().getUsuario().getEmail(), tutoriaEliminada);
     } catch (IOException e) {
       e.printStackTrace();
     }

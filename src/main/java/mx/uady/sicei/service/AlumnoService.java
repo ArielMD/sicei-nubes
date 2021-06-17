@@ -139,7 +139,7 @@ public class AlumnoService {
         alumnoEditado = alumnoRepository.save(alumnoEditado);
 
         try {
-            this.emailService.editAlert(alumnoEditado.getUsuario().getEmail(), alumnoEncontrado, alumnoEditado);
+            this.emailService.sendEditAlert(alumnoEditado.getUsuario().getEmail(), alumnoEncontrado, alumnoEditado);
         } catch (IOException e) {
             e.printStackTrace();
         }

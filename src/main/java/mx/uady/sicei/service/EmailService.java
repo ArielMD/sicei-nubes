@@ -26,27 +26,23 @@ public class EmailService {
   @Value("${email.sendgrid}")
   private String sendgridEmail;
 
-  @Async
-  public void WelcomeEmail(String email, Alumno alumno) throws IOException {
+  public void sendWelcomeEmail(String email, Alumno alumno) throws IOException {
     String mensaje = "Bienvenido a la aplicación sicei-app" + alumno.getNombre();
     sendEMail(email, "Registro de usuario", mensaje);
   }
 
-  @Async
-  public void loginAlert(String email, String userAgent) throws IOException {
+  public void sendLoginAlert(String email, String userAgent) throws IOException {
     String mensaje = "Se ha iniciado sesión en el dispositivo " + userAgent;
     sendEMail(email, "Alerta de incio de sesión", mensaje);
   }
 
-  @Async
-  public void tutoriaAlert(String email, Tutoria tutoria) throws IOException {
-    String mensaje = "Se ha eliminado la tutoria\n" + "La tutoría de duración " + tutoria.getHoras() + " hr(s) con el Profesor"
+  public void sendTutoriaAlert(String email, Tutoria tutoria) throws IOException {
+    String mensaje = "Se ha eliminado la tutoria\n" + "La tutoría de duración " + tutoria.getHoras() + " hr(s) con el Profesor "
         + tutoria.getProfesor().getNombre() + " se ha cancelado";
     sendEMail(email, "Tutoria eliminada", mensaje);
   }
 
-  @Async
-  public void editAlert(String email, Alumno alumno, Alumno alumnoEditado) throws IOException {
+  public void sendEditAlert(String email, Alumno alumno, Alumno alumnoEditado) throws IOException {
     String inicio =  "Se ha realizado un cambio en la cuenta " + alumnoEditado.getUsuario().getUsuario();
     String cuerpoInicio = "\nde" +
     "\nNombre: " + alumno.getNombre() +
@@ -68,6 +64,7 @@ public class EmailService {
     sendEMail(email, "Campo Editado", inicio + cuerpoInicio + cuerpoFinal);
   }
 
+  @Async
   public void sendEMail(String email, String subject, String mensaje) throws IOException {
     Mail mail = prepareMail(email, subject, mensaje);
 
@@ -85,7 +82,6 @@ public class EmailService {
       System.out.println(response.getStatusCode());
       System.out.println(response.getBody());
       System.out.println(response.getHeaders());
-
     } catch (IOException ex) {
       throw ex;
     }
