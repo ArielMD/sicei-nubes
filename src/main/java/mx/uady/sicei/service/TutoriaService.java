@@ -1,5 +1,6 @@
 package mx.uady.sicei.service;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,7 @@ import mx.uady.sicei.repository.ProfesorRepository;
 import mx.uady.sicei.repository.TutoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
- 
+
 @Service
 public class TutoriaService {
 
@@ -27,6 +28,8 @@ public class TutoriaService {
   private AlumnoRepository alumnoRepository;
   @Autowired
   private ProfesorRepository profesorRepository;
+  @Autowired
+  private EmailService emailService;
 
   public List<Tutoria> getTutorias() {
     List<Tutoria> tutorias = new LinkedList<>();
@@ -67,10 +70,11 @@ public class TutoriaService {
 
     Tutoria tutoria = new Tutoria();
 
-    Alumno alumno = alumnoExiste(request.getId().getAlumnoId());
-    Profesor profesor = profesorExiste(request.getId().getProfesorId());
+    Alumno alumno = alumnoExiste(request.getAlumnoId());
+    Profesor profesor = profesorExiste(request.getProfesorId());
 
-    tutoria.setId(request.getId());
+    TutoriaLlave id = new TutoriaLlave(request.getAlumnoId(), request.getProfesorId());
+    tutoria.setId(id);
     tutoria.setAlumno(alumno);
     tutoria.setProfesor(profesor);
     tutoria.setHoras(request.getHoras());
@@ -103,6 +107,11 @@ public class TutoriaService {
   public void eliminarTutoria(TutoriaLlave id) {
     Tutoria tutoriaEliminada = getTutoria(id);
 
+    try {
+      emailService.sendTutoriaAlert(tutoriaEliminada.getAlumno().getUsuario().getEmail(), tutoriaEliminada);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     tutoriaRepository.delete(tutoriaEliminada);
   }
 

@@ -1,6 +1,7 @@
 package mx.uady.sicei.model.request;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -18,16 +19,21 @@ public class AlumnoRequest {
     @NotNull
     private Licenciatura licenciatura;
 
-    @Positive
-    @NotNull
-    private String matricula;
-
     private Integer equipo;
 
     @Size(min = 8, message = "La contraseña debe contener al menos 8 caracteres")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&].*", message = "La contraseña debe contener al memos un letra, un numero y un caracter especial")
     @NotEmpty
     private String contrasena;
+
+    @Email
+    @NotEmpty
+    private String correo;
+
+    @NotEmpty
+    @NotBlank
+    @Positive
+    private String matricula;
 
     public AlumnoRequest() {
     }
@@ -57,14 +63,6 @@ public class AlumnoRequest {
         return this;
     }
 
-    public String getMatricula() {
-        return this.matricula;
-    }
-
-    public void setMatricula(String matricula) {
-        this.matricula = matricula;
-    }
-
     public Integer getEquipo() {
         return this.equipo;
     }
@@ -79,6 +77,22 @@ public class AlumnoRequest {
 
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public String getMatricula() {
+        return this.matricula;
+    }
+
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
     }
 
     @Override

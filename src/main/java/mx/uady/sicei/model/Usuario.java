@@ -21,6 +21,9 @@ public class Usuario {
     private String usuario;
 
     @Column
+    private String email;
+
+    @Column
     @JsonIgnore
     private String password;
 
@@ -50,6 +53,14 @@ public class Usuario {
 
     public void setUsuario(String usuario) {
         this.usuario = usuario;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmai(String email) {
+        this.email = email;
     }
 
     public Usuario id(Integer id) {

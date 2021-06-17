@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mx.uady.sicei.model.Alumno;
 import mx.uady.sicei.model.request.AlumnoRequest;
+import mx.uady.sicei.model.request.AlumnoUpdateRequest;
 import mx.uady.sicei.service.AlumnoService;
 
 @RestController // Metaprogramacion
@@ -60,8 +61,7 @@ public class AlumnoRest {
     }
 
     @PutMapping("/alumnos/{id}")
-    public ResponseEntity<Alumno> actualizarAlumno(@RequestBody @Valid AlumnoRequest request,
-            @PathVariable Integer id) {
+    public ResponseEntity<Alumno> actualizarAlumno(@RequestBody @Valid AlumnoUpdateRequest request, @PathVariable Integer id) {
         return ResponseEntity.ok().body(alumnoService.actualizarAlumno(id, request));
     }
 

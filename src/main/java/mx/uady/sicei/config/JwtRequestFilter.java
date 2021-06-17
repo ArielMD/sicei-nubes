@@ -37,7 +37,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-        Usuario usuario = usuarioRepository.findByUsuario(username);
+        Usuario usuario = usuarioRepository.findByUsuario(username).get();
 
         if(usuario == null || !jwtTokenUtil.validateToken(jwtToken, usuario)) { //valida que el token corresponda a un usuario
             chain.doFilter(request, response);

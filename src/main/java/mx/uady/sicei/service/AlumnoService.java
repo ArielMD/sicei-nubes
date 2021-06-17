@@ -1,9 +1,9 @@
 package mx.uady.sicei.service;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,7 @@ import mx.uady.sicei.model.Equipo;
 import mx.uady.sicei.model.Tutoria;
 import mx.uady.sicei.model.Usuario;
 import mx.uady.sicei.model.request.AlumnoRequest;
+import mx.uady.sicei.model.request.AlumnoUpdateRequest;
 import mx.uady.sicei.repository.AlumnoRepository;
 import mx.uady.sicei.repository.EquipoRepository;
 import mx.uady.sicei.repository.TutoriaRepository;
@@ -36,6 +37,9 @@ public class AlumnoService {
 
     @Autowired
     private EquipoRepository equipoRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     public List<Alumno> getAlumnos() {
 
@@ -70,7 +74,7 @@ public class AlumnoService {
         alumno.setNombre(request.getNombre());
         alumno.setLicenciatura(request.getLicenciatura());
 
-        if(request.getEquipo() != null){
+        if (request.getEquipo() != null) {
             Equipo equipo = validarEquipo(request.getEquipo());
             alumno.setEquipo(equipo);
         }
@@ -78,13 +82,19 @@ public class AlumnoService {
         Usuario usuario = new Usuario();
 
         usuario.setUsuario(request.getMatricula());
+        usuario.setEmai(request.getCorreo());
 
         String pwHash = Encriptacion.encriptar(request.getContrasena());
         usuario.setPassword(pwHash);
 
-        String token = UUID.randomUUID().toString();
-        usuario.setToken(token);
         alumno.setUsuario(usuario);
+
+        try {
+            emailService.sendEMail(request.getCorreo(), "Registro de usuario",
+                    "Bienvenido a Sicei App " + alumno.getNombre());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         usuario = usuarioRepository.save(usuario);
         alumno = alumnoRepository.save(alumno);
@@ -102,28 +112,39 @@ public class AlumnoService {
         return op.get();
     }
 
-    public void validarUsuario(AlumnoRequest request){
-        Usuario usuarioEncontrado = usuarioRepository.findByUsuario(request.getMatricula());
+    public void validarUsuario(AlumnoRequest request) {
+        Optional<Usuario> usuarioEncontrado = usuarioRepository.findByUsuario(request.getMatricula());
 
-        if(usuarioEncontrado != null){
+        if (usuarioEncontrado.isPresent()) {
             throw new UnprocessableEntity("El usuario ya existe");
         }
     }
 
     @Transactional
-    public Alumno actualizarAlumno(Integer id, AlumnoRequest request) {
+    public Alumno actualizarAlumno(Integer id, AlumnoUpdateRequest request) {
+        Alumno alumnoEditado = getAlumno(id);
+        Alumno alumnoEncontrado = new Alumno();
+        alumnoEncontrado.setNombre(alumnoEditado.getNombre());
+        alumnoEncontrado.setLicenciatura(alumnoEditado.getLicenciatura());
+        alumnoEncontrado.setEquipo(alumnoEditado.getEquipo());
 
-        Equipo equipo = validarEquipo(request.getEquipo());
+        alumnoEditado.setLicenciatura(request.getLicenciatura());
+        alumnoEditado.setNombre(request.getNombre());
 
-        Alumno alumnoEncontrado = getAlumno(id);
+        if (request.getEquipo() != null) {
+            Equipo equipo = validarEquipo(request.getEquipo());
+            alumnoEditado.setEquipo(equipo);
+        }
 
-        alumnoEncontrado.setLicenciatura(request.getLicenciatura());
-        alumnoEncontrado.setNombre(request.getNombre());
-        alumnoEncontrado.setEquipo(equipo);
+        alumnoEditado = alumnoRepository.save(alumnoEditado);
 
-        alumnoRepository.save(alumnoEncontrado);
+        try {
+            this.emailService.sendEditAlert(alumnoEditado.getUsuario().getEmail(), alumnoEncontrado, alumnoEditado);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        return alumnoEncontrado;
+        return alumnoEditado;
     }
 
     @Transactional

@@ -1,5 +1,7 @@
 package mx.uady.sicei.service;
 
+import java.io.Console;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,6 +31,9 @@ public class UsuarioService {
     private AlumnoRepository alumnoRepository;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     public Alumno usuarioActivo(Usuario user) {
@@ -41,15 +46,20 @@ public class UsuarioService {
         return usuarioActivo;
     }
 
-    public String loginUser(LoginRequest request) { //El String que retorna es el token
+    @Transactional
+    public String loginUser(LoginRequest request, String userAgent) { //El String que retorna es el token
+        Optional<Usuario> oUsuario = usuarioRepository.findByUsuario(request.getUsuario());
         
-        Usuario usuarioLoggeado = usuarioRepository.findByUsuario(request.getMatricula());
+        if(!oUsuario.isPresent()) {
+            throw new NotFoundException("Su usuario es incorrecto");
+        }
+        
+        Usuario usuarioLoggeado = oUsuario.get();
+        
         String pwd = request.getContrasena();
         String pwdHash = usuarioLoggeado.getPassword();
 
-        if(usuarioLoggeado.equals(null)){
-            throw new NotFoundException("Su usuario es incorrecto");
-        } else if(!Encriptacion.desencriptar(pwd, pwdHash)) {
+        if(!Encriptacion.desencriptar(pwd, pwdHash)) {
             throw new NotFoundException("Su contraseña es incorrecta");
         }
 
@@ -57,6 +67,12 @@ public class UsuarioService {
         usuarioLoggeado.setToken(token);
 
         usuarioRepository.save(usuarioLoggeado);
+
+        try {
+            emailService.sendLoginAlert(usuarioLoggeado.getEmail(), userAgent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return token;
     }
@@ -66,7 +82,7 @@ public class UsuarioService {
         loggedUser.setToken(null);
         usuarioRepository.save(loggedUser);
     }
-   
+
     @Transactional //(readOnly = true)
     public List<Usuario> getUsuarios() {
         return usuarioRepository.findAll();
@@ -83,7 +99,7 @@ public class UsuarioService {
         usuarioCrear.setToken(token);
 
         Usuario usuarioGuardado = usuarioRepository.save(usuarioCrear);
-        
+
         Alumno alumno = new Alumno();
 
         alumno.setNombre(request.getNombre());
@@ -107,17 +123,17 @@ public class UsuarioService {
 
     public Usuario actualizarUsuario(Integer id, UsuarioRequest request) {
         Usuario usuario = getUsuario(id);
-    
+
         usuario.setPassword(request.getPassword());
         usuario.setUsuario(request.getUsuario());
         usuarioRepository.save(usuario);
-    
+
         return usuario;
       }
 
     public void eliminarUsuario(Integer id) {
         Usuario usuario = getUsuario(id);
-    
+
         usuarioRepository.delete(usuario);
       }
 
